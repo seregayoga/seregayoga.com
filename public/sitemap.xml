@@ -1,28 +1,11 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
-  
-  <url>
-    <loc>https://seregayoga.com/posts/hello-world/</loc>
-    <lastmod>2020-01-28T00:33:08+01:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://seregayoga.com/posts/</loc>
-    <lastmod>2020-01-28T00:33:08+01:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://seregayoga.com/</loc>
-    <lastmod>2020-01-28T00:33:08+01:00</lastmod>
-  </url>
-  
   <url>
     <loc>https://seregayoga.com/categories/</loc>
-  </url>
-  
-  <url>
+  </url><url>
+    <loc>https://seregayoga.com/</loc>
+  </url><url>
     <loc>https://seregayoga.com/tags/</loc>
   </url>
-  
 </urlset>

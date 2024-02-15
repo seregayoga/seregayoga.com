@@ -27,14 +27,14 @@ title = "GitHub"
 url = "https://github.com/seregayoga"
 
 [[params.socialLinks]]
-icon = "fa-solid fa-envelope"
-title = "Email"
-url = "mailto:seregayoga@gmail.com"
-
-[[params.socialLinks]]
 icon = "fa-brands fa-linkedin"
 title = "Linkedin"
 url = "https://www.linkedin.com/in/sergey-fedchenko/"
+
+[[params.socialLinks]]
+icon = "fa-solid fa-envelope"
+title = "Email"
+url = "mailto:seregayoga@gmail.com"
 
 # For hugo >= 0.60.0, enable inline HTML
 [markup.goldmark.renderer]

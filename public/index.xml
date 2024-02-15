@@ -5,7 +5,15 @@
     <link>https://seregayoga.com/</link>
     <description>Recent content on Sergey Fedchenko</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
+    <language>en</language>
+    <lastBuildDate>Thu, 15 Feb 2024 23:38:04 +0100</lastBuildDate>
     <atom:link href="https://seregayoga.com/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>How to host Hugo website on Github Pages using custom domain name</title>
+      <link>https://seregayoga.com/posts/hugo-github-pages-custom-domain/</link>
+      <pubDate>Thu, 15 Feb 2024 23:38:04 +0100</pubDate>
+      <guid>https://seregayoga.com/posts/hugo-github-pages-custom-domain/</guid>
+      <description>This website https://seregayoga.com is built on Hugo static site generator and hosted on Github. There are two tutorials from Hugo and from Github on how to configure it. Here is the gist of them on how to do the same on your own domain name. Assuming it is example.com and your Github profile name is your-github-profile.&#xA;Create a Hugo website. You can take a look at official quickstart guide. Create a public Github repo and push the code there from the previous step.</description>
+    </item>
   </channel>
 </rss>

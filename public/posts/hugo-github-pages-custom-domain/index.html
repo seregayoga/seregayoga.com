@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head><title>How to host Hugo website on Github Pages using custom domain name &ndash; Sergey Fedchenko</title>
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="UTF-8"/>
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.9.4/css/academicons.min.css" integrity="sha512-IW0nhlW5MgNydsXJO40En2EoCkTTjZhI3yuODrZIc8cQ4h1XcF53PsqDHa09NqnkXuIe0Oiyyj171BqZFwISBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+
+<link rel="stylesheet" href="https://seregayoga.com/css/palettes/tokyo-night-light.css">
+<link rel="stylesheet" href="https://seregayoga.com/css/risotto.css">
+<link rel="stylesheet" href="https://seregayoga.com/css/custom.css">
+
+
+<link rel="icon" href="https://seregayoga.com/favicon.ico">
+
+
+
+
+</head>
+
+    <body>
+        <div class="page">
+
+            <header class="page__header"><nav class="page__nav main-nav">
+    <ul>
+      <li class="nomarker"><h1 class="page__logo"><a href="https://seregayoga.com" class="page__logo-inner">Sergey Fedchenko</a></h1></li>
+    
+    
+    <li class="main-nav__item"><a class="nav-main-item active" href="https://seregayoga.com/posts/" title="Posts">Posts</a></li>
+    
+    </ul>
+</nav>
+
+</header>
+
+            <section class="page__body">
+    <header class="content__header">
+        <h1>How to host Hugo website on Github Pages using custom domain name</h1>
+    </header>
+    <div class="content__body">
+        <p>This website <a href="https://seregayoga.com">https://seregayoga.com</a> is built on Hugo static site generator and hosted on Github. There are two tutorials from <a href="https://gohugo.io/hosting-and-deployment/hosting-on-github/">Hugo</a> and from <a href="https://gohugo.io/hosting-and-deployment/hosting-on-github/">Github</a> on how to configure it. Here is the gist of them on how to do the same on your own domain name. Assuming it is <code>example.com</code> and your Github profile name is <code>your-github-profile</code>.</p>
+<ol>
+<li>Create a Hugo website. You can take a look at official <a href="https://gohugo.io/getting-started/quick-start/">quickstart guide</a>.</li>
+<li>Create a public Github repo and push the code there from the previous step.</li>
+<li><a href="https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/verifying-your-custom-domain-for-github-pages">Verify your custom domain.</a> At this step you will be adding a <code>TXT</code> DNS record. Do not close web interface of your DNS provider; you will need it for the next step.</li>
+<li>Continuing configuring DNS: add four <code>A</code> records to point your domain to Github servers:</li>
+</ol>
+<pre tabindex="0"><code>185.199.108.153
+185.199.109.153
+185.199.110.153
+185.199.111.153
+</code></pre><p>Additionally, if your DNS provider supports IPv6, add four AAAA records:</p>
+<pre tabindex="0"><code>2606:50c0:8000::153
+2606:50c0:8001::153
+2606:50c0:8002::153
+2606:50c0:8003::153
+</code></pre><p>And finally add a <code>CNAME</code> record with name <code>www.example.com</code> and value <code>your-github-profile.github.io.</code>; by doing this you will have a redirect from <code>www.example.com</code> to <code>example.com</code>.</p>
+<p>Verify you did everything right by following <code>dig</code> commands:</p>
+<pre tabindex="0"><code>$ dig www.example.com +noall +answer -t A
+www.example.com.	2872	IN	CNAME	your-github-profile.github.io.
+your-github-profile.github.io.	2872	IN	A	185.199.111.153
+your-github-profile.github.io.	2872	IN	A	185.199.109.153
+your-github-profile.github.io.	2872	IN	A	185.199.108.153
+your-github-profile.github.io.	2872	IN	A	185.199.110.153
+
+$ dig www.example.com +noall +answer -t AAAA
+www.example.com.	2869	IN	CNAME	your-github-profile.github.io.
+your-github-profile.github.io.	2869	IN	AAAA	2606:50c0:8000::153
+your-github-profile.github.io.	2869	IN	AAAA	2606:50c0:8001::153
+your-github-profile.github.io.	2869	IN	AAAA	2606:50c0:8003::153
+your-github-profile.github.io.	2869	IN	AAAA	2606:50c0:8002::153
+
+$ dig www.example.com +noall +answer -t CNAME
+www.example.com.	2866	IN	CNAME	your-github-profile.github.io.
+</code></pre><ol start="5">
+<li>Go to settings of your Github repository, then <code>Pages</code> and in <code>Build and deployment</code> section in the <code>Source</code> dropdown choose <code>Hugo</code> and click on <code>Configure</code>. Github will provide you with a Github Actions config file, simply commit these changes to your repository.</li>
+<li>At this step you might already close <code>Pages</code> settings page, if so open it again. There in <code>Custom domain</code> specify yours, in our case it will be <code>example.com</code>. You should see <code>DNS check successful</code> badge meaning you did everything right in steps 3. and 4. Make sure <code>Enforce HTTPS</code> checkbox is checked so Github will take care of enabling https.</li>
+<li>Voilà! Now you can enjoy your website powered by Github Pages on your own domain.</li>
+</ol>
+
+    </div>
+    <footer class="content__footer"></footer>
+
+            </section>
+
+            <section class="page__aside">
+                <div class="aside__about">
+
+<ul class="aside__social-links">
+    
+    <li>
+        <a href="https://github.com/seregayoga" rel="me" aria-label="GitHub" title="GitHub"><i class="fa-brands fa-github" aria-hidden="true"></i></a>&nbsp;
+    </li>
+    
+    <li>
+        <a href="mailto:seregayoga@gmail.com" rel="me" aria-label="Email" title="Email"><i class="fa-solid fa-envelope" aria-hidden="true"></i></a>&nbsp;
+    </li>
+    
+    <li>
+        <a href="https://www.linkedin.com/in/sergey-fedchenko/" rel="me" aria-label="Linkedin" title="Linkedin"><i class="fa-brands fa-linkedin" aria-hidden="true"></i></a>&nbsp;
+    </li>
+    
+</ul>
+</div>
+                <hr>
+                <div class="aside__content">
+    
+    
+        <p>
+            
+            2024-02-15
+        </p>
+    
+
+    
+
+                </div>
+            </section>
+
+            <footer class="page__footer"><p>
+    
+    
+    
+    
+    
+    
+      
+    
+    
+    
+</p>
+<br /><br />
+<p class="copyright"></p>
+<p class="advertisement">Powered by <a href="https://gohugo.io/">hugo</a> and <a href="https://github.com/joeroe/risotto">risotto</a>.</p>
+</footer>
+
+        </div>
+    </body>
+
+</html>

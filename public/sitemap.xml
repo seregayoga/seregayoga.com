@@ -2,9 +2,16 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://seregayoga.com/categories/</loc>
+    <loc>https://seregayoga.com/posts/hugo-github-pages-custom-domain/</loc>
+    <lastmod>2024-02-15T23:38:04+01:00</lastmod>
+  </url><url>
+    <loc>https://seregayoga.com/posts/</loc>
+    <lastmod>2024-02-15T23:38:04+01:00</lastmod>
   </url><url>
     <loc>https://seregayoga.com/</loc>
+    <lastmod>2024-02-15T23:25:51+01:00</lastmod>
+  </url><url>
+    <loc>https://seregayoga.com/categories/</loc>
   </url><url>
     <loc>https://seregayoga.com/tags/</loc>
   </url>

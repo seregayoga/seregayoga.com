@@ -86,7 +86,7 @@ Answer      │                               ├──────────�
 <p>What happens when we get a user request:</p>
 <ol>
 <li><code>support-assistance-api-server</code> receives a text of user&rsquo;s support request.</li>
-<li>We ask <code>OpenAI</code> to generate embeddings of the user request&rsquo;s text. Embeddings are the meaning of the text represented in a high-dimensional vector space. Using <a href="https://en.wikipedia.org/wiki/Cosine_similarity">cosine similarity</a> of embeddings we can determine how close the texts are to each other in meaning. There are a lot of materials on the internet about it; for example take a look at <a href="https://platform.openai.com/docs/guides/embeddings">this article</a>. How generating embeddings looks in the code:</li>
+<li>We ask <code>OpenAI</code> to generate embeddings of the user request&rsquo;s text. Embeddings are the meaning of the text represented in a high-dimensional vector space. Using <a href="https://en.wikipedia.org/wiki/Cosine_similarity">cosine similarity</a> of embeddings we can determine how close the texts are to each other in meaning. There are a lot of materials on the internet about it; for example take a look at <a href="https://platform.openai.com/docs/guides/embeddings">this article</a>. Using OpenAI Go library <a href="https://github.com/sashabaranov/go-openai">github.com/sashabaranov/go-openai</a> we can generate embeddings:</li>
 </ol>
 <pre tabindex="0"><code>func (openaiLLM *openaiLLM) CreateEmbeddings(ctx context.Context, input string) ([]float32, error) {
 	request := openai.EmbeddingRequest{
@@ -103,10 +103,14 @@ Answer      │                               ├──────────�
 }
 </code></pre><p>Where <code>input</code> is the text for which we generate embeddings.</p>
 <ol start="3">
-<li>Using embeddings from the previous step we get similar support case from the PostgreSQL database with installed <a href="https://github.com/pgvector/pgvector">pgvector extension</a>. It might the case you already have an application with PostgreSQL database and just installing an extension seems really convenient. Here is the query to the database:</li>
+<li>Using embeddings from the previous step we get similar support case from the PostgreSQL database with installed <a href="https://github.com/pgvector/pgvector">pgvector extension</a>. It might the case you already have an application with PostgreSQL database and just installing an extension seems really convenient. Here is how we execute sql query to get the closest by meaning case:</li>
 </ol>
-<pre tabindex="0"><code>SELECT chat FROM support_history ORDER BY embedding &lt;=&gt; $1 LIMIT 1
-</code></pre><p>Where <code>&lt;=&gt;</code> is a cosine distance operator provided by the extension.</p>
+<pre tabindex="0"><code>row := store.dbConn.QueryRow(
+	ctx,
+	&#34;SELECT chat FROM support_history ORDER BY embedding &lt;=&gt; $1 LIMIT 1&#34;,
+	pgvector.NewVector(embeddings),
+)
+</code></pre><p>Where <code>&lt;=&gt;</code> is a cosine distance operator provided by the extension and by calling <code>pgvector.NewVector(embeddings)</code> from <a href="https://github.com/pgvector/pgvector-go">github.com/pgvector/pgvector-go</a> we prepare a vector to be used in a database query.</p>
 <ol start="4">
 <li>And finally we ask OpenAI to generate a response to the user using predefined prompt with injected there the content of the support case we found on the previous step. How it looks in the code:</li>
 </ol>
@@ -153,7 +157,7 @@ Historical Support Case:
 &#34;%s&#34;
 
 Provide direct instructions to the user based on the insights gained from the historical support case.
-</code></pre><p>For me it&rsquo;s the most fascinating part, it&rsquo;s like programming in plain English. Imagine writing software in the future will be only like this?</p>
+</code></pre><p>For me it&rsquo;s the most fascinating part, it&rsquo;s like programming in plain English. Imagine writing software in the future will be only like this.</p>
 <p>Such systems are also called Retrieval Augmented Generation (RAG), there is an <a href="https://eli.thegreenplace.net/2023/retrieval-augmented-generation-in-go/">excellent blog post</a> about implementing it in Go from Eli Bendersky.</p>
 <p>Generated response may look like this:</p>
 <pre tabindex="0"><code>$ curl -X POST -d &#39;{&#34;support_request&#34;:&#34;My internet is slow today. Can you help me with it?&#34;}&#39; http://localhost:8080/v1/support
@@ -162,9 +166,9 @@ Provide direct instructions to the user based on the insights gained from the hi
 <ol>
 <li>In our simplified architecture it loads support cases from the disk.</li>
 <li>Asks <code>OpenAI</code> to generate embeddings using the same API request as in <code>support-assistance-api-server</code>.</li>
-<li>Saves support case text with associated embeddings in the database, so that <code>support-assistance-load-history</code> can load it new user request is similar to what was already solved.</li>
+<li>Saves support case text with associated embeddings in the database, so that <code>support-assistance-api-server</code> can load it when receiving a new user request that is similar to what was already solved.</li>
 </ol>
-<p>Example support cases were generated by ChatGPT using this prompt:</p>
+<p>The examples of the support cases were generated by ChatGPT using this prompt:</p>
 <pre tabindex="0"><code>Hello! Please, generate a conversation between support engineer from local internet company and a customer asking for a help. The case should be solved and the end.
 </code></pre><p>See the repository for the full source code: <a href="https://github.com/seregayoga/support-assistant-api">https://github.com/seregayoga/support-assistant-api</a></p>
 <p><strong>Conclusion</strong></p>

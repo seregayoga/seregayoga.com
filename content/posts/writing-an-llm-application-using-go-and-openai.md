@@ -48,7 +48,7 @@ The main component here is an LLM, in our case it is OpenAI, which we will call 
 
 What happens when we get a user request:
 1. `support-assistance-api-server` receives a text of user's support request.
-2. We ask `OpenAI` to generate embeddings of the user request's text. Embeddings are the meaning of the text represented in a high-dimensional vector space. Using [cosine similarity](https://en.wikipedia.org/wiki/Cosine_similarity) of embeddings we can determine how close the texts are to each other in meaning. There are a lot of materials on the internet about it; for example take a look at [this article](https://platform.openai.com/docs/guides/embeddings). How generating embeddings looks in the code:
+2. We ask `OpenAI` to generate embeddings of the user request's text. Embeddings are the meaning of the text represented in a high-dimensional vector space. Using [cosine similarity](https://en.wikipedia.org/wiki/Cosine_similarity) of embeddings we can determine how close the texts are to each other in meaning. There are a lot of materials on the internet about it; for example take a look at [this article](https://platform.openai.com/docs/guides/embeddings). Using OpenAI Go library [github.com/sashabaranov/go-openai](https://github.com/sashabaranov/go-openai) we can generate embeddings:
 ```
 func (openaiLLM *openaiLLM) CreateEmbeddings(ctx context.Context, input string) ([]float32, error) {
 	request := openai.EmbeddingRequest{
@@ -66,11 +66,15 @@ func (openaiLLM *openaiLLM) CreateEmbeddings(ctx context.Context, input string) 
 ```
 Where `input` is the text for which we generate embeddings.
 
-3. Using embeddings from the previous step we get similar support case from the PostgreSQL database with installed [pgvector extension](https://github.com/pgvector/pgvector). It might the case you already have an application with PostgreSQL database and just installing an extension seems really convenient. Here is the query to the database:
+3. Using embeddings from the previous step we get similar support case from the PostgreSQL database with installed [pgvector extension](https://github.com/pgvector/pgvector). It might the case you already have an application with PostgreSQL database and just installing an extension seems really convenient. Here is how we execute sql query to get the closest by meaning case:
 ```
-SELECT chat FROM support_history ORDER BY embedding <=> $1 LIMIT 1
+row := store.dbConn.QueryRow(
+	ctx,
+	"SELECT chat FROM support_history ORDER BY embedding <=> $1 LIMIT 1",
+	pgvector.NewVector(embeddings),
+)
 ```
-Where `<=>` is a cosine distance operator provided by the extension.
+Where `<=>` is a cosine distance operator provided by the extension and by calling `pgvector.NewVector(embeddings)` from [github.com/pgvector/pgvector-go](https://github.com/pgvector/pgvector-go) we prepare a vector to be used in a database query.
 
 4. And finally we ask OpenAI to generate a response to the user using predefined prompt with injected there the content of the support case we found on the previous step. How it looks in the code:
 ```

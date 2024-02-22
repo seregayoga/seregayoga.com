@@ -6,8 +6,15 @@
     <description>Recent content in Posts on Sergey Fedchenko</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Thu, 15 Feb 2024 23:38:04 +0100</lastBuildDate>
+    <lastBuildDate>Thu, 22 Feb 2024 00:00:00 +0100</lastBuildDate>
     <atom:link href="https://seregayoga.com/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Writing an LLM application using Go and OpenAI</title>
+      <link>https://seregayoga.com/posts/writing-an-llm-application-using-go-and-openai/</link>
+      <pubDate>Thu, 22 Feb 2024 00:00:00 +0100</pubDate>
+      <guid>https://seregayoga.com/posts/writing-an-llm-application-using-go-and-openai/</guid>
+      <description>Large Language Models (LLM) has been a hot technology for the last two years after the success of ChatGPT. I frequently use it in addition to Github Copilot at work and in day-to-day life. Recently I read this article about the architecture of LLM applications and decided to implement something similar to try the new technology in practice.&#xA;We will be developing a support assistance API for the local internet provider, the same example as in Github&amp;rsquo;s article I mentioned above.</description>
+    </item>
     <item>
       <title>How to host Hugo website on Github Pages using custom domain name</title>
       <link>https://seregayoga.com/posts/hugo-github-pages-custom-domain/</link>
